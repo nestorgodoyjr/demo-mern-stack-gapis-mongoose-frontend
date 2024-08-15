@@ -9,7 +9,7 @@ const BusinessSearch = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.get('https://my-google-api.vercel.app', {
+            const response = await axios.get('https://my-google-api.vercel.app/api/places', {
                 params: { type, location }
             });
             setResults(response.data);

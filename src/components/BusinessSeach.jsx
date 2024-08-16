@@ -9,7 +9,7 @@ const BusinessSearch = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.get('http://localhost:5000/api/places', {
+            const response = await axios.get('https://demo-mern-stack-gapi-mongoose-backend.onrender.com/api/places', {
                 params: { type, location }
             });
             setResults(response.data);

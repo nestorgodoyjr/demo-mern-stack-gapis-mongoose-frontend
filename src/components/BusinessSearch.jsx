@@ -36,6 +36,29 @@ const BusinessSearch = () => {
     }
   };
 
+  const fetchAllData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/all-data`);
+
+      if (response.data && Array.isArray(response.data)) {
+        setResults(response.data);
+        setTotalPages(1); // All data is in a single page
+        setCurrentPage(1);
+        setSearched(true);
+      } else {
+        setResults([]);
+        setSearched(false);
+      }
+    } catch (error) {
+      setError('Error fetching all data');
+      setSearched(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > totalPages) return;
     fetchPlaces(newPage);
@@ -112,37 +135,23 @@ const BusinessSearch = () => {
     return buttons;
   };
 
-  const downloadCSV = () => {
-    if (results.length === 0) {
-      alert('No data to download');
-      return;
+  const downloadCSV = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/export`, {
+        responseType: 'blob' // Ensure the response is treated as a file (blob)
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'businesses.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading CSV:', error);
+      alert('Error downloading CSV');
     }
-
-    const headers = ['Place ID', 'Name', 'Address', 'Rating', 'Website', 'Phone Number', 'User Ratings Total', 'Open Now'];
-    const rows = results.map(business => [
-      business.place_id || '',
-      business.name || '',
-      business.formatted_address || '',
-      business.rating || '',
-      business.website || '',
-      business.formatted_phone_number || '',
-      business.user_ratings_total || '',
-      business.opening_hours?.open_now ? 'Yes' : 'No'
-    ]);
-
-    const csvContent = [
-      headers.join(','),
-      ...rows.map(row => row.join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.setAttribute('download', 'businesses.csv');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   };
 
   return (
@@ -165,10 +174,13 @@ const BusinessSearch = () => {
           {loading ? 'Searching...' : 'Search'}
         </button>
       </form>
+      <button onClick={fetchAllData} disabled={loading}>
+        See All Existing Data
+      </button>
       {error && <p>{error}</p>}
       {results.length > 0 && (
         <button onClick={downloadCSV} disabled={loading}>
-          Download CSV
+          Download All Data as CSV
         </button>
       )}
       <ul>

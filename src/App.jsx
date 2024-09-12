@@ -13,20 +13,21 @@ function App() {
   };
 
   return (
-    <div className='container'>
+    <div className='GAPI'>
       <center><h1>Business Search</h1></center>
-      {!user ? (
+      {/* {!user ? (
         <>
           <LoginForm onLoginSuccess={handleLoginSuccess} />
           <RegisterForm />
         </>
       ) : (
         <>
-          <EmailForm />
-          <BusinessSearch />
+          
           
         </>
-      )}
+      )} */}
+      {/* <EmailForm /> */}
+      <BusinessSearch />
     </div>
   );
 }

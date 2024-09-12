@@ -76,64 +76,90 @@ const BusinessSearch = () => {
   const renderPaginationButtons = () => {
     const buttons = [];
     const maxPagesToShow = 5;
-
+  
     if (searched && currentPage > 1) {
       buttons.push(
-        <button key="prev" onClick={() => handlePageChange(currentPage - 1)} disabled={loading}>
+        <button
+          key="prev"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={loading}
+          className={currentPage === 1 ? 'disabled' : ''}
+        >
           Previous
         </button>
       );
     }
-
+  
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-
+  
     if (endPage - startPage + 1 < maxPagesToShow) {
       startPage = Math.max(1, endPage - maxPagesToShow + 1);
     }
-
+  
     if (searched && startPage > 1) {
       buttons.push(
-        <button key={1} onClick={() => handlePageChange(1)} disabled={loading}>
+        <button
+          key={1}
+          onClick={() => handlePageChange(1)}
+          disabled={loading}
+          className={currentPage === 1 ? 'active' : ''}
+        >
           1
         </button>
       );
-
+  
       if (startPage > 2) {
         buttons.push(<span key="ellipsis-start">...</span>);
       }
     }
-
+  
     for (let i = startPage; i <= endPage; i++) {
       buttons.push(
-        <button key={i} onClick={() => handlePageChange(i)} disabled={i === currentPage || loading}>
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          disabled={i === currentPage || loading}
+          className={i === currentPage ? 'active' : ''}
+        >
           {i}
         </button>
       );
     }
-
+  
     if (searched && endPage < totalPages) {
       if (endPage < totalPages - 1) {
         buttons.push(<span key="ellipsis-end">...</span>);
       }
-
+  
       buttons.push(
-        <button key={totalPages} onClick={() => handlePageChange(totalPages)} disabled={loading}>
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          disabled={loading}
+          className={currentPage === totalPages ? 'active' : ''}
+        >
           {totalPages}
         </button>
       );
     }
-
+  
     if (searched && currentPage < totalPages) {
       buttons.push(
-        <button key="next" onClick={() => handlePageChange(currentPage + 1)} disabled={loading}>
+        <button
+          key="next"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={loading}
+          className={currentPage === totalPages ? 'disabled' : ''}
+        >
           Next
         </button>
       );
     }
-
+  
     return buttons;
   };
+  
 
   const downloadCSV = async () => {
     try {
@@ -156,8 +182,9 @@ const BusinessSearch = () => {
 
   return (
     <div>
-      <h2>Business Search</h2>
+      
       <form onSubmit={handleSubmit}>
+      <h3>Type and Location</h3>
         <input
           type="text"
           placeholder="Search Type (e.g., restaurant)"
@@ -183,23 +210,48 @@ const BusinessSearch = () => {
           Download All Data as CSV
         </button>
       )}
-      <ul>
-        {results.length > 0 ? (
-          results.map((business) => (
-            <li key={business.place_id}>
-              <h2><strong>Business Name: </strong>{business.name}</h2>
-              <p><strong>Address: </strong>{business.formatted_address}</p>
-              <p><strong>Rating: </strong>{business.rating}</p>
-              <p><strong>Website: </strong><a href={business.website} target="_blank" rel="noopener noreferrer">{business.website}</a></p>
-              <p><strong>Phone Number: </strong>{business.formatted_phone_number}</p>
-              <p><strong>Total User Ratings: </strong>{business.user_ratings_total}</p>
-              <p><strong>Open Now: </strong>{business.opening_hours?.open_now ? 'Yes' : 'No'}</p>
-            </li>
-          ))
-        ) : (
-          <p>No results found.</p>
-        )}
-      </ul>
+      {results.length > 0 && (
+        <table id="list">
+          <thead>
+            <tr>
+              {/* <th>#</th> */}
+              <th>Business Name</th>
+              <th>Address</th>
+              <th>Rating</th>
+              <th>Website</th>
+              <th>Phone Number</th>
+              <th>Total User Ratings</th>
+              <th>Open Now</th>
+            </tr>
+          </thead>
+          <tbody>
+            {results.map((business, index) => (
+              <tr key={business.place_id}>
+                {/* <td className='gapi__font-size'>{business.place_id}</td> */}
+                <td className='gapi__font-size'>{business.name}</td>
+                <td className='gapi__font-size'>{business.formatted_address}</td>
+                <td className='gapi__font-size'>{business.rating}</td>
+                <td className='gapi__font-size'>
+                  <a href={business.website} target="_blank" rel="noopener noreferrer">
+                    {business.website}
+                  </a>
+                </td>
+                <td className='gapi__font-size'>
+                  {business.formatted_phone_number ? (
+                    <a href={`tel:${business.formatted_phone_number.replace(/\s+/g, '')}`}>
+                      {business.formatted_phone_number}
+                    </a>
+                  ) : 'N/A'}
+                </td>
+                <td className='gapi__font-size'>{business.user_ratings_total}</td>
+                <td className='gapi__font-size'>
+        {business.opening_hours && business.opening_hours.open_now ? 'Yes' : 'No'}
+      </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
       {searched && (
         <div className="pagination">
           {renderPaginationButtons()}

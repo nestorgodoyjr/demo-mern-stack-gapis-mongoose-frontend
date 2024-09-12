@@ -127,3 +127,69 @@ h1 {
 		margin-top: 0;
 	}
 }
+
+#list {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  #list th, #list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #list th {
+    background-color: #0446aa;
+    color: white;
+    text-align: left;
+  }
+  
+  #list tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  #list tr:hover {
+    background-color: #ddd;
+  }
+  
+  #list td a {
+    color: #0446aa;
+    text-decoration: none;
+  }
+  
+  #list td a:hover {
+    text-decoration: underline;
+  }
+
+  .gapi__font-size {
+	font-size: 10px; 
+	font-family: Arial, sans-serif; 
+  }
+
+  .pagination button.active {
+	background-color: #007bff; /* Highlight color */
+	color: white; /* Text color for the highlighted button */
+	font-weight: bold; /* Optional: make text bold */
+  }
+  
+  .pagination button.disabled {
+	background-color: #e0e0e0; /* Disabled button color */
+	color: #b0b0b0; /* Disabled text color */
+	cursor: not-allowed; /* Cursor style for disabled state */
+  }
+  
+  .pagination button {
+	margin: 0 2px; /* Spacing between buttons */
+	padding: 5px 10px; /* Padding inside buttons */
+	border: 1px solid #ccc; /* Button border */
+	border-radius: 4px; /* Optional: rounded corners */
+	background-color: #f8f9fa; /* Default button background */
+	color: #333; /* Default text color */
+	cursor: pointer; /* Cursor style for clickable buttons */
+  }
+  
+  .pagination button:hover:not(.disabled) {
+	background-color: #ddd; /* Hover color for non-disabled buttons */
+  }
+  
